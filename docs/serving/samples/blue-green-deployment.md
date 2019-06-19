@@ -120,7 +120,7 @@ background. To create the new revision, we'll edit our existing configuration in
 `blue-green-demo-config.yaml` with an updated image and environment variables:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Configuration
 metadata:
   name: blue-green-demo # Configuration name is unchanged, since we're updating an existing Configuration
@@ -163,7 +163,7 @@ revision while still sending all other traffic to the first revision. Edit
 `blue-green-demo-route.yaml`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Route
 metadata:
   name: blue-green-demo # Route name is unchanged, since we're updating an existing Route
@@ -174,7 +174,7 @@ spec:
       percent: 100 # All traffic still going to the first revision
     - revisionName: blue-green-demo-m9548
       percent: 0 # 0% of traffic routed to the second revision
-      name: v2 # A named route
+      tag: v2 # A named route
 ```
 
 Save the file, then apply the updated route to your cluster:
@@ -205,7 +205,7 @@ We'll once again update our existing route to begin shifting traffic away from
 the first revision and toward the second. Edit `blue-green-demo-route.yaml`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Route
 metadata:
   name: blue-green-demo # Updating our existing route
@@ -216,7 +216,7 @@ spec:
       percent: 50 # Updating the percentage from 100 to 50
     - revisionName: blue-green-demo-m9548
       percent: 50 # Updating the percentage from 0 to 50
-      name: v2
+      tag: v2
 ```
 
 Save the file, then apply the updated route to your cluster:
@@ -241,7 +241,7 @@ Lastly, we'll update our existing route to finally shift all traffic to the
 second revision. Edit `blue-green-demo-route.yaml`:
 
 ```yaml
-apiVersion: serving.knative.dev/v1beta1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Route
 metadata:
   name: blue-green-demo # Updating our existing route
@@ -250,7 +250,7 @@ spec:
   traffic:
     - revisionName: blue-green-demo-lcfrd
       percent: 0
-      name: v1 # Adding a new named route for v1
+      tag: v1 # Adding a new named route for v1
     - revisionName: blue-green-demo-m9548
       percent: 100
       # Named route for v2 has been removed, since we don't need it anymore
